@@ -4,85 +4,128 @@ import com.semenov.criterias.BadCustomerCriteria;
 import com.semenov.criterias.NameCriteria;
 import com.semenov.criterias.PriceCriteria;
 import com.semenov.criterias.ProductNameCriteria;
+import com.semenov.dto.SearchResult;
 import com.semenov.dto.Result;
 import com.semenov.entity.Customer;
-import com.semenov.query.Query;
+import com.semenov.query.SearchQuery;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+
+@Slf4j
+@RequiredArgsConstructor
+@Data
 public class SearchParser {
 
-    private Query query;
+    private final SearchQuery searchQuery;
+    private SearchResult searchResult;
 
-    public void search(){
+
+    public SearchResult search() {
+        searchResult = new SearchResult();
+        List<Result> resultList = new ArrayList<>();
+        searchResult.setResults(resultList);
+        searchResult.setType("search");
+
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader("test.txt"));
-        JSONArray jsonArray = (JSONArray) jsonObject.get("criterias");
+        JSONObject inputJson = null;
+        try {
+            inputJson = (JSONObject) jsonParser.parse(new FileReader("test.txt"));
+            log.info("INPUT JSON : {}\n", inputJson);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        JSONArray jsonArray = (JSONArray) inputJson.get("criterias");
 
-        for (Object obj : jsonArray) {
-            JSONObject jsonString = (JSONObject) obj;
+        jsonArray.forEach(objectFromJsonArray -> {
+            JSONObject jsonString = (JSONObject) objectFromJsonArray;
+            log.info("OBJECT FROM JSON ARRAY {}", jsonString);
 
-            if (jsonString.containsKey("lastName")) {
-                String lastName = jsonString.get("lastName").toString();
-                List<Customer> customerList = query.findByLastName(lastName);
-                System.out.println(customerList);
+            parseLastNameFromJson(resultList, jsonString);
+            pasreProductNameAndMinTimes(resultList, jsonString);
+            parseMinAndMaxExpense(resultList, jsonString);
+            parseBadCustomers(resultList, jsonString);
+        });
+        return searchResult;
+    }
 
+    private void parseBadCustomers(List<Result> resultList, JSONObject jsonString) {
+        if (jsonString.containsKey("badCustomers")) {
+            int badCustomers = Integer.parseInt(jsonString.get("badCustomers").toString());
+            log.info("BAD CUSTOMERS FROM JSON : {}", badCustomers);
 
-                NameCriteria nameCriteria = new NameCriteria(lastName);
-                Result result = new Result();
-                result.setCriteria(nameCriteria);
-                resultList.add(result);
-                result.setResults(customerList);
-            }
+            List<Customer> listBadCustomers = searchQuery.findByBadCustomers(badCustomers);
 
-            if (jsonString.containsKey("productName") & jsonString.containsKey("minTimes")) {
-                String productName = jsonString.get("productName").toString();
-                Integer minTimes = Integer.parseInt(jsonString.get("minTimes").toString());
-
-                List<Customer> listCustomers = query.findByProductNameAndMinTimes(productName, minTimes);
-
-                ProductNameCriteria productNameCriteria = new ProductNameCriteria(productName, minTimes);
-                Result result = new Result();
-                result.setCriteria(productNameCriteria);
-                resultList.add(result);
-                result.setResults(listCustomers);
-            }
-
-            if (jsonString.containsKey("minExpenses") && jsonString.containsKey("maxExpenses")) {
-                Integer minExpenses = Integer.parseInt(jsonString.get("minExpenses").toString());
-                Integer maxExpenses = Integer.parseInt(jsonString.get("maxExpenses").toString());
-
-                List<Customer> listCustomers = query.findByBetweenSum(minExpenses, maxExpenses);
-
-                PriceCriteria priceCriteria = new PriceCriteria(minExpenses, maxExpenses);
-                Result result = Result.builder()
-                        .criteria(priceCriteria)
-                        .results(listCustomers)
-                        .build();
-
-                resultList.add(result);
-            }
-
-            if (jsonString.containsKey("badCustomers")) {
-                Integer badCustomers = Integer.parseInt(jsonString.get("badCustomers").toString());
-
-                List<Customer> listBadCustomers = query.findByBadCustomers(badCustomers);
-
-                BadCustomerCriteria badCustomerCriteria = new BadCustomerCriteria(badCustomers);
-
-                Result result = Result.builder()
-                        .criteria(badCustomerCriteria)
-                        .results(listBadCustomers)
-                        .build();
-
-                resultList.add(result);
-            }
-
+            BadCustomerCriteria badCustomerCriteria = new BadCustomerCriteria(badCustomers);
+            Result result = Result.builder()
+                    .criteria(badCustomerCriteria)
+                    .results(listBadCustomers)
+                    .build();
+            resultList.add(result);
+            log.info("ADD IN RESULT LIST RESULT FROM QUERY {}\n", result);
         }
     }
 
+    private void parseMinAndMaxExpense(List<Result> resultList, JSONObject jsonString) {
+        if (jsonString.containsKey("minExpenses") && jsonString.containsKey("maxExpenses")) {
+            int minExpenses = Integer.parseInt(jsonString.get("minExpenses").toString());
+            int maxExpenses = Integer.parseInt(jsonString.get("maxExpenses").toString());
+            log.info("MIN EXPENSES : {},   MAX EXPENSES : {}", minExpenses, maxExpenses);
+
+            List<Customer> listCustomers = searchQuery.findByBetweenSum(minExpenses, maxExpenses);
+
+            PriceCriteria priceCriteria = new PriceCriteria(minExpenses, maxExpenses);
+            Result result = Result.builder()
+                    .criteria(priceCriteria)
+                    .results(listCustomers)
+                    .build();
+            resultList.add(result);
+            log.info("ADD IN RESULT LIST RESULT FROM QUERY {}\n", result);
+        }
+    }
+
+    private void pasreProductNameAndMinTimes(List<Result> resultList, JSONObject jsonString) {
+        if (jsonString.containsKey("productName") && jsonString.containsKey("minTimes")) {
+            String productName = jsonString.get("productName").toString();
+            log.info("PRODUCT NAME FROM JSON : {}", productName);
+
+            int minTimes = Integer.parseInt(jsonString.get("minTimes").toString());
+            log.info("MIN TIMES  FROM JSON : {}", minTimes);
+
+            List<Customer> listCustomers = searchQuery.findByProductNameAndMinTimes(productName, minTimes);
+            ProductNameCriteria productNameCriteria = new ProductNameCriteria(productName, minTimes);
+            Result result = Result.builder()
+                    .criteria(productNameCriteria)
+                    .results(listCustomers)
+                    .build();
+            resultList.add(result);
+            log.info("ADD IN RESULT LIST RESULT FROM QUERY {}\n", result);
+        }
+    }
+
+    private void parseLastNameFromJson(List<Result> resultList, JSONObject jsonString) {
+        if (jsonString.containsKey("lastName")) {
+            String lastName = jsonString.get("lastName").toString();
+            List<Customer> customerList = searchQuery.findByLastName(lastName);
+            log.info("LAST NAME FROM JSON STRING : {}", lastName);
+
+            NameCriteria nameCriteria = new NameCriteria(lastName);
+            Result result = Result.builder()
+                    .criteria(nameCriteria)
+                    .results(customerList)
+                    .build();
+            resultList.add(result);
+            log.info("ADD IN RESULT LIST RESULT FROM QUERY {}\n", result);
+        }
+    }
 }
