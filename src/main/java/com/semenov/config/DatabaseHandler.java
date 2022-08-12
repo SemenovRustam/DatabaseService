@@ -10,7 +10,7 @@ public class DatabaseHandler {
     public static final String URL = "jdbc:postgresql://localhost:5432/postgres";
     public static final String USERNAME = "postgres";
     public static final String PASSWORD = "superpostgres";
-    public static final String JDBC_POSTGRES_DRIVER = "org.postgresql.Driver";
+
 
 
     public static Connection getDbConnection() {
