@@ -1,14 +1,15 @@
-package com.semenov.parser;
+package com.semenov.operation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.semenov.utils.Utils;
 import com.semenov.criterias.BadCustomerCriteria;
 import com.semenov.criterias.NameCriteria;
 import com.semenov.criterias.PriceCriteria;
 import com.semenov.criterias.ProductNameCriteria;
-import com.semenov.dto.SearchResult;
 import com.semenov.dto.Result;
+import com.semenov.dto.SearchResult;
 import com.semenov.entity.Customer;
 import com.semenov.query.SearchQuery;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -16,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,26 +26,26 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Data
-public class SearchParser {
+public class Search {
 
     private final SearchQuery searchQuery;
-    private SearchResult searchResult;
+    private final ObjectMapper objectMapper;
 
 
-    public SearchResult search() {
-        searchResult = new SearchResult();
+    public void search(String inputFile, String outputFile) {
         List<Result> resultList = new ArrayList<>();
-        searchResult.setResults(resultList);
-        searchResult.setType("search");
+        SearchResult searchResult = SearchResult.builder()
+                .type(Type.SEARCH.getType())
+                .results(resultList)
+                .build();
 
         JSONParser jsonParser = new JSONParser();
         JSONObject inputJson = null;
         try {
-            inputJson = (JSONObject) jsonParser.parse(new FileReader("test.txt"));
+            inputJson = (JSONObject) jsonParser.parse(new FileReader(inputFile));
             log.info("INPUT JSON : {}\n", inputJson);
         } catch (IOException | ParseException e) {
-            e.printStackTrace();
+            Utils.writeExceptionInJsonFile(e.getMessage(), outputFile);
         }
         JSONArray jsonArray = (JSONArray) inputJson.get("criterias");
 
@@ -52,11 +54,20 @@ public class SearchParser {
             log.info("OBJECT FROM JSON ARRAY {}", jsonString);
 
             parseLastNameFromJson(resultList, jsonString);
-            pasreProductNameAndMinTimes(resultList, jsonString);
+            parseProductNameAndMinTimes(resultList, jsonString);
             parseMinAndMaxExpense(resultList, jsonString);
             parseBadCustomers(resultList, jsonString);
         });
-        return searchResult;
+        writeFinalResultSearch(searchResult, outputFile);
+    }
+
+    private void writeFinalResultSearch(SearchResult searchResult, String outputFile) {
+        try {
+            objectMapper.writeValue(new File(outputFile), searchResult);
+        } catch (IOException e) {
+            Utils.writeExceptionInJsonFile(e.getMessage(), outputFile);
+            e.printStackTrace();
+        }
     }
 
     private void parseBadCustomers(List<Result> resultList, JSONObject jsonString) {
@@ -94,7 +105,7 @@ public class SearchParser {
         }
     }
 
-    private void pasreProductNameAndMinTimes(List<Result> resultList, JSONObject jsonString) {
+    private void parseProductNameAndMinTimes(List<Result> resultList, JSONObject jsonString) {
         if (jsonString.containsKey("productName") && jsonString.containsKey("minTimes")) {
             String productName = jsonString.get("productName").toString();
             log.info("PRODUCT NAME FROM JSON : {}", productName);

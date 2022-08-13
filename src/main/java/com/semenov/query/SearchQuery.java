@@ -85,25 +85,4 @@ public class SearchQuery {
         }
         return customers;
     }
-
-//    public List<Sale> findSalesByCustomerId(int customerId, Date startDate, Date endDate) throws SQLException {
-//        List<Sale> saleList = new ArrayList<>();
-//
-//        try (Connection connection = DatabaseHandler.getDbConnection();
-//             PreparedStatement statement = connection.prepareStatement(Constant.FIND_SALES_BY_CUSTOMER_ID)) {
-//
-//            statement.setInt(1, customerId);
-//            statement.setDate(2, startDate);
-//            statement.setDate(3, endDate);
-//
-//            ResultSet resultSet = statement.executeQuery();
-//            while (resultSet.next()) {
-//                Sale sale = new Sale(resultSet.getString("name"), resultSet.getInt("expenses"));
-//                saleList.add(sale);
-//            }
-//        }
-//        return saleList;
-//    }
-
-
 }

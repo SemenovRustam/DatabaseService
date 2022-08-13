@@ -2,37 +2,48 @@ package com.semenov;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.semenov.dto.SearchResult;
-import com.semenov.dto.Result;
-import com.semenov.parser.SearchParser;
+import com.semenov.utils.Utils;
+import com.semenov.operation.Search;
+import com.semenov.operation.Statistic;
 import com.semenov.query.SearchQuery;
+import com.semenov.query.StatisticQuery;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 public class Main {
 
+    public static void main(String[] args) {
+       try {
+           ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void main(String[] args)  {
-//        SearchQuery searchQuery = new SearchQuery();
-//        SearchParser searchParser = new SearchParser(searchQuery);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        SearchResult search = searchParser.search();
-//        List<Result> results = search.getResults();
-//
-//
-//
-//        try {
-//            objectMapper.writeValue(new File("resultFile.txt"), results);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+           String inputFile = args[1];
+           String outputFile = args[2];
 
+           if (args.length != 3) {
+               Utils.writeExceptionInJsonFile("Arguments must be equals 3", outputFile);
+               log.error("Arguments must be equals 3");
+           }
 
+           switch (args[0]) {
+               case "search":
+                   SearchQuery searchQuery = new SearchQuery();
+                   Search search = new Search(searchQuery, objectMapper);
+                   search.search(inputFile, outputFile);
+                   break;
 
+               case "stat":
+                   StatisticQuery statisticQuery = new StatisticQuery();
+                   Statistic statistic = new Statistic(statisticQuery, objectMapper);
+                   statistic.getStatistic(inputFile, outputFile);
+                   break;
+               default:
+                   log.info("Enter correct arguments!");
+                   Utils.writeExceptionInJsonFile("Try again", outputFile);
+           }
+       } catch (Exception e) {
+           log.error(e.getMessage());
+           Utils.writeExceptionInJsonFile(e.getMessage(), "D:\\exception.json");
+       }
     }
 }

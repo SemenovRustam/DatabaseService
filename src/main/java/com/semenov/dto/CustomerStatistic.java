@@ -7,14 +7,17 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SearchResult {
+public class CustomerStatistic {
 
-    String type;
+    private String name;
 
-    List<Result> results;
+    private List<Purchase> purchases;
+
+    private Integer totalExpenses;
 
 }

@@ -40,21 +40,23 @@ insert into product(name, cost) values('Черешня', 4500);
 insert into product(name, cost) values('Клубника', 3200);
 insert into product(name, cost) values('Дыня', 5000);
 
-insert into sale(customer_id, product_id, date) values(1, 3, '2022-08-19');
-insert into sale(customer_id, product_id, date) values(2, 1, '2022-08-19');
-insert into sale(customer_id, product_id, date) values(3, 1, '2022-08-20');
-insert into sale(customer_id, product_id, date) values(1, 4, '2022-08-20');
-insert into sale(customer_id, product_id, date) values(3, 2, '2022-08-21');
-insert into sale(customer_id, product_id, date) values(4, 5, '2022-08-22');
-insert into sale(customer_id, product_id, date) values(1, 5, '2022-08-22');
-insert into sale(customer_id, product_id, date) values(5, 4, '2022-08-23');
-insert into sale(customer_id, product_id, date) values(5, 5, '2022-08-23');
-insert into sale(customer_id, product_id, date) values(4, 3, '2022-08-24');
+insert into sale(customer_id, product_id, sales_date) values(1, 3, '2022-08-19');
+insert into sale(customer_id, product_id, sales_date) values(2, 1, '2022-08-19');
+insert into sale(customer_id, product_id, sales_date) values(3, 1, '2022-08-20');
+insert into sale(customer_id, product_id, sales_date) values(1, 4, '2022-08-20');
+insert into sale(customer_id, product_id, sales_date) values(3, 2, '2022-08-21');
+insert into sale(customer_id, product_id, sales_date) values(4, 5, '2022-08-22');
+insert into sale(customer_id, product_id, sales_date) values(1, 5, '2022-08-22');
+insert into sale(customer_id, product_id, sales_date) values(5, 4, '2022-08-23');
+insert into sale(customer_id, product_id, sales_date) values(5, 5, '2022-08-23');
+insert into sale(customer_id, product_id, sales_date) values(4, 3, '2022-08-24');
 
-insert into sale(customer_id, product_id, date) values(3, 6, '2022-08-24');
-insert into sale(customer_id, product_id, date) values(4, 7, '2022-08-24');
-insert into sale(customer_id, product_id, date) values(5, 8, '2022-08-24');
-insert into sale(customer_id, product_id, date) values(6, 9, '2022-08-24');
-insert into sale(customer_id, product_id, date) values(7, 10, '2022-08-24');
-insert into sale(customer_id, product_id, date) values(8, 11, '2022-08-24');
+insert into sale(customer_id, product_id, sales_date) values(3, 6, '2022-08-24');
+insert into sale(customer_id, product_id, sales_date) values(4, 7, '2022-08-24');
+insert into sale(customer_id, product_id, sales_date) values(5, 8, '2022-08-24');
+insert into sale(customer_id, product_id, sales_date) values(6, 9, '2022-08-24');
+insert into sale(customer_id, product_id, sales_date) values(7, 10, '2022-08-24');
+insert into sale(customer_id, product_id, sales_date) values(8, 11, '2022-08-24');
+
+insert into sale(customer_id, product_id, sales_date) values(4, 2, '2022-08-22');
 
