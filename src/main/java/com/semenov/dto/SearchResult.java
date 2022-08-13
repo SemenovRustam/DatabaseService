@@ -12,9 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class SearchResult {
-
-    String type;
-
-    List<Result> results;
-
+    private String type;
+    private List<Result> results;
 }

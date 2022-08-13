@@ -13,14 +13,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 public class CompleteStatistics {
-
     private String type;
-
     private Integer totalDays;
-
     private List<CustomerStatistic> customers;
-
     private Integer totalExpenses;
-
     private BigDecimal avgExpenses;
 }

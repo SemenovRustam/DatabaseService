@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Purchase {
-
     private String name;
-
     private Integer expenses;
 }

@@ -14,8 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Result {
-
     private Criteria criteria;
-
     private List<Customer> results;
 }

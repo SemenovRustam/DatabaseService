@@ -13,11 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CustomerStatistic {
-
     private String name;
-
     private List<Purchase> purchases;
-
     private Integer totalExpenses;
 
 }

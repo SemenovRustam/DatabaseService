@@ -7,6 +7,5 @@ import lombok.Data;
 @Builder
 public class ExceptionDto {
     private String type;
-
     private String message;
 }
