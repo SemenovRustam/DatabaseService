@@ -8,5 +8,7 @@ search - поиск покупателей по определенным кри�
 
 Пример использования: 
 java -jar Aikam.jar stat inputStat.json outputFile.json
+
+
 java -jar Aikam.jar search inputSearch outputFile.json
 
