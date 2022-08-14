@@ -50,13 +50,11 @@ insert into sale(customer_id, product_id, sales_date) values(1, 5, '2022-08-22')
 insert into sale(customer_id, product_id, sales_date) values(5, 4, '2022-08-23');
 insert into sale(customer_id, product_id, sales_date) values(5, 5, '2022-08-23');
 insert into sale(customer_id, product_id, sales_date) values(4, 3, '2022-08-24');
-
 insert into sale(customer_id, product_id, sales_date) values(3, 6, '2022-08-24');
 insert into sale(customer_id, product_id, sales_date) values(4, 7, '2022-08-24');
 insert into sale(customer_id, product_id, sales_date) values(5, 8, '2022-08-24');
 insert into sale(customer_id, product_id, sales_date) values(6, 9, '2022-08-24');
 insert into sale(customer_id, product_id, sales_date) values(7, 10, '2022-08-24');
 insert into sale(customer_id, product_id, sales_date) values(8, 11, '2022-08-24');
-
 insert into sale(customer_id, product_id, sales_date) values(4, 2, '2022-08-22');
 

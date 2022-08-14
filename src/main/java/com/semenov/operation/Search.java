@@ -1,6 +1,7 @@
 package com.semenov.operation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.semenov.criterias.Criteria;
 import com.semenov.utils.Utils;
 import com.semenov.criterias.BadCustomerCriteria;
 import com.semenov.criterias.NameCriteria;
@@ -75,13 +76,12 @@ public class Search {
             int badCustomers = Integer.parseInt(jsonString.get("badCustomers").toString());
             log.info("BAD CUSTOMERS FROM JSON : {}", badCustomers);
 
-            List<Customer> listBadCustomers = searchQuery.findByBadCustomers(badCustomers);
+            List<Customer> listBadCustomers = searchQuery.findCustomersByBadCustomers(badCustomers);
 
             BadCustomerCriteria badCustomerCriteria = new BadCustomerCriteria(badCustomers);
-            Result result = Result.builder()
-                    .criteria(badCustomerCriteria)
-                    .results(listBadCustomers)
-                    .build();
+
+            Result result = getResult(listBadCustomers, badCustomerCriteria);
+
             resultList.add(result);
             log.info("ADD IN RESULT LIST RESULT FROM QUERY {}\n", result);
         }
@@ -93,17 +93,15 @@ public class Search {
             int maxExpenses = Integer.parseInt(jsonString.get("maxExpenses").toString());
             log.info("MIN EXPENSES : {},   MAX EXPENSES : {}", minExpenses, maxExpenses);
 
-            List<Customer> listCustomers = searchQuery.findByBetweenSum(minExpenses, maxExpenses);
+            List<Customer> listCustomers = searchQuery.findCustomersByBetweenSum(minExpenses, maxExpenses);
 
             PriceCriteria priceCriteria = new PriceCriteria(minExpenses, maxExpenses);
-            Result result = Result.builder()
-                    .criteria(priceCriteria)
-                    .results(listCustomers)
-                    .build();
+            Result result = getResult(listCustomers, priceCriteria);
             resultList.add(result);
             log.info("ADD IN RESULT LIST RESULT FROM QUERY {}\n", result);
         }
     }
+
 
     private void parseProductNameAndMinTimes(List<Result> resultList, JSONObject jsonString) {
         if (jsonString.containsKey("productName") && jsonString.containsKey("minTimes")) {
@@ -113,12 +111,11 @@ public class Search {
             int minTimes = Integer.parseInt(jsonString.get("minTimes").toString());
             log.info("MIN TIMES  FROM JSON : {}", minTimes);
 
-            List<Customer> listCustomers = searchQuery.findByProductNameAndMinTimes(productName, minTimes);
+            List<Customer> listCustomers = searchQuery.findCustomersByProductNameAndMinTimes(productName, minTimes);
             ProductNameCriteria productNameCriteria = new ProductNameCriteria(productName, minTimes);
-            Result result = Result.builder()
-                    .criteria(productNameCriteria)
-                    .results(listCustomers)
-                    .build();
+
+            Result result = getResult(listCustomers, productNameCriteria);
+
             resultList.add(result);
             log.info("ADD IN RESULT LIST RESULT FROM QUERY {}\n", result);
         }
@@ -127,16 +124,21 @@ public class Search {
     private void parseLastNameFromJson(List<Result> resultList, JSONObject jsonString) {
         if (jsonString.containsKey("lastName")) {
             String lastName = jsonString.get("lastName").toString();
-            List<Customer> customerList = searchQuery.findByLastName(lastName);
+            List<Customer> customerList = searchQuery.findCustomersByLastName(lastName);
             log.info("LAST NAME FROM JSON STRING : {}", lastName);
 
             NameCriteria nameCriteria = new NameCriteria(lastName);
-            Result result = Result.builder()
-                    .criteria(nameCriteria)
-                    .results(customerList)
-                    .build();
+
+            Result result = getResult(customerList, nameCriteria);
             resultList.add(result);
             log.info("ADD IN RESULT LIST RESULT FROM QUERY {}\n", result);
         }
+    }
+
+    private Result getResult(List<Customer> listCustomers, Criteria criteria) {
+        return Result.builder()
+                .criteria(criteria)
+                .results(listCustomers)
+                .build();
     }
 }

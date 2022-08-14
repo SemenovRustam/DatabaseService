@@ -13,28 +13,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.semenov.query.Constant.getPeriodQuery;
+import static com.semenov.query.Constant.getSalesOnPeriodByCustomerIdQuery;
+
 @Slf4j
 public class StatisticQuery {
 
     public List<Integer> findCustomersIdInPeriod(String startDate, String endDate) {
         List<Integer> listCustomersId = new ArrayList<>();
-
         try (Connection connection = DatabaseHandler.getDbConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT customer.id\n" +
-                     "FROM sale\n" +
-                     "         JOIN customer ON sale.customer_id = customer.id\n" +
-                     "         JOIN product ON sale.product_id = product.id\n" +
-                     "WHERE sale.sales_date BETWEEN '" + startDate + "' and '" + endDate + "'\n" +
-                     "  AND EXTRACT(isodow FROM sale.sales_date) NOT IN (6, 7)\n" +
-                     "GROUP BY customer.id\n" +
-                     "ORDER BY sum(product.cost) DESC")) {
+             PreparedStatement statement = connection.prepareStatement(getPeriodQuery(startDate, endDate))) {
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 listCustomersId.add(resultSet.getInt("id"));
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            log.error(exception.getMessage());
         }
         log.info("CUSTOMERS ID FOR A PERIOD : {}", listCustomersId);
         return listCustomersId;
@@ -47,32 +42,30 @@ public class StatisticQuery {
         List<Purchase> purchaseList = new ArrayList<>();
 
         try (Connection connection = DatabaseHandler.getDbConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT customer.firstname, customer.lastname, product.name, sum(product.cost) as sum\n" +
-                     "FROM customer\n" +
-                     "         JOIN sale ON customer.id = sale.customer_id\n" +
-                     "         JOIN product ON sale.product_id = product.id\n" +
-                     "WHERE sale.sales_date BETWEEN '" + startDate + "' and '" + endDate + "'\n" +
-                     "  AND EXTRACT(isodow FROM sale.sales_date) NOT IN (6, 7)\n" +
-                     "  AND customer_id = " + id + "\n" +
-                     "GROUP BY customer.firstname, customer.lastname, product.name, product.cost\n" +
-                     "ORDER BY sum DESC;")) {
+             PreparedStatement statement = connection.prepareStatement(getSalesOnPeriodByCustomerIdQuery(id, startDate, endDate))) {
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-
-                Purchase purchase = Purchase.builder()
-                        .name(resultSet.getString("name"))
-                        .expenses(resultSet.getInt("sum"))
-                        .build();
-
-                String fullCustomerName = resultSet.getString("lastname") + " " + resultSet.getString("firstname");
+                Purchase purchase = getPurchase(resultSet);
+                String fullCustomerName = getFullCustomerName(resultSet);
                 purchaseList.add(purchase);
                 nameAndSalesMap.put(fullCustomerName, purchaseList);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            log.error(exception.getMessage());
         }
         return nameAndSalesMap;
+    }
+
+    private Purchase getPurchase(ResultSet resultSet) throws SQLException {
+        return Purchase.builder()
+                .name(resultSet.getString("name"))
+                .expenses(resultSet.getInt("sum"))
+                .build();
+    }
+
+    private String getFullCustomerName(ResultSet resultSet) throws SQLException {
+        return resultSet.getString("lastname") + " " + resultSet.getString("firstname");
     }
 }
 

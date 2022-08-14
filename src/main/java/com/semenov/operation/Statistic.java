@@ -41,13 +41,7 @@ public class Statistic {
         String startDate = statisticDate.getStartDate();
         String endDate = statisticDate.getEndDate();
 
-        String correctDate = "\\d{4}-\\d{2}-\\d{2}";
-        if (!startDate.matches(correctDate) || !endDate.matches(correctDate)) {
-            log.warn("incorrect date {}, {}", startDate, endDate);
-            Utils.writeExceptionInJsonFile("Incorrect date from Json file!", outputFile);
-            throw new ApplicationException("Incorrect date from Json file!");
-        }
-        log.info("START DATE : {}, END DATE : {}", startDate, endDate);
+        validateDate(outputFile, startDate, endDate);
 
         LocalDate startDateLocal = LocalDate.parse(startDate);
         LocalDate endDateLocal = LocalDate.parse(endDate);
@@ -89,6 +83,17 @@ public class Statistic {
         log.info("COMPLETE STATISTIC FOR PERIOD {}\n", finalStatistics);
 
         writeResultStatisticInFile(finalStatistics, outputFile);
+    }
+
+    private void validateDate(String outputFile, String startDate, String endDate) {
+        String correctDate = "\\d{4}-\\d{2}-\\d{2}";
+
+        if (!startDate.matches(correctDate) || !endDate.matches(correctDate)) {
+            log.warn("incorrect date {}, {}", startDate, endDate);
+            Utils.writeExceptionInJsonFile("Incorrect date from Json file!", outputFile);
+            throw new ApplicationException("Incorrect date from Json file!");
+        }
+        log.info("START DATE : {}, END DATE : {}", startDate, endDate);
     }
 
 
