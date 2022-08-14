@@ -55,8 +55,7 @@ public class Statistic {
 
             salesOnPeriodByCustomersId.forEach((name, purchases) -> {
                 int totalPurchaseSum = purchases.stream()
-                        .map(Purchase::getExpenses)
-                        .mapToInt(Integer::intValue)
+                        .mapToInt(Purchase::getExpenses)
                         .sum();
 
                 CustomerStatistic customerStatistic = CustomerStatistic.builder()
@@ -117,8 +116,7 @@ public class Statistic {
 
     private int getTotalExpensiveAllPurchaseForPeriod(List<CustomerStatistic> customerStatisticList) {
         int totalExpensiveAllPurchaseOfPeriod = customerStatisticList.stream()
-                .map(CustomerStatistic::getTotalExpenses)
-                .mapToInt(Integer::intValue)
+                .mapToInt(CustomerStatistic::getTotalExpenses)
                 .sum();
         log.info("TOTAL EXPENSIVE FOR ALL PURCHASE : {}", totalExpensiveAllPurchaseOfPeriod);
         return totalExpensiveAllPurchaseOfPeriod;
