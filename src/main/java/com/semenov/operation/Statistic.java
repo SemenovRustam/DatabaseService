@@ -147,7 +147,7 @@ public class Statistic {
         return inputJson;
     }
 
-    private static Integer getWorkDay(LocalDate startDateLocal, LocalDate endDateLocal) {
+    private Integer getWorkDay(LocalDate startDateLocal, LocalDate endDateLocal) {
         DayOfWeek startW = startDateLocal.getDayOfWeek();
         DayOfWeek endW = endDateLocal.getDayOfWeek();
 
