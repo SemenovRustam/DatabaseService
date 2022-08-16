@@ -30,7 +30,7 @@ insert into customer(firstname, lastname) values ('Иванов', 'Иванов'
 insert into customer(firstname, lastname) values ('Oleg', 'Иванов');
 
 
-insert into product(name, cost) values('Milk', 5);
+insert into product(name, cost) values('Jvahka', 1);
 insert into product(name, cost) values('Eggs', 3);
 insert into product(name, cost) values('Bread', 7);
 insert into product(name, cost) values('Water', 15);
@@ -57,4 +57,5 @@ insert into sale(customer_id, product_id, sales_date) values(6, 9, '2022-08-24')
 insert into sale(customer_id, product_id, sales_date) values(7, 10, '2022-08-24');
 insert into sale(customer_id, product_id, sales_date) values(8, 11, '2022-08-24');
 insert into sale(customer_id, product_id, sales_date) values(4, 2, '2022-08-22');
+insert into sale(customer_id, product_id, sales_date) values(4, 12, '2022-08-22');
 

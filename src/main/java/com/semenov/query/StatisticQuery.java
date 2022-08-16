@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.semenov.query.Constant.getPeriodQuery;
-import static com.semenov.query.Constant.getSalesOnPeriodByCustomerIdQuery;
+import static com.semenov.query.ConstantQuery.getPeriodQuery;
+import static com.semenov.query.ConstantQuery.getSalesOnPeriodByCustomerIdQuery;
 
 @Slf4j
 public class StatisticQuery {

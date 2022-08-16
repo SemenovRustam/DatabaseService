@@ -17,7 +17,7 @@ public class SearchQuery {
     public List<Customer> findCustomersByLastName(String lastName) {
         List<Customer> customerList = new ArrayList<>();
         try (Connection connection = DatabaseHandler.getDbConnection();
-             PreparedStatement statement = connection.prepareStatement(Constant.SELECT_BY_LAST_NAME)) {
+             PreparedStatement statement = connection.prepareStatement(ConstantQuery.SELECT_BY_LAST_NAME)) {
             statement.setString(1, lastName);
 
             ResultSet resultSet = statement.executeQuery();
@@ -35,7 +35,7 @@ public class SearchQuery {
     public List<Customer> findCustomersByProductNameAndMinTimes(String productName, int minTimes) {
         List<Customer> customerList = new ArrayList<>();
         try (Connection connection = DatabaseHandler.getDbConnection();
-             PreparedStatement statement = connection.prepareStatement(Constant.SELECT_PRODUCT_NAME_AND_FIRST_NAME_AND_LAST_NAME)) {
+             PreparedStatement statement = connection.prepareStatement(ConstantQuery.SELECT_PRODUCT_NAME_AND_FIRST_NAME_AND_LAST_NAME)) {
             statement.setString(1, productName);
             statement.setInt(2, minTimes);
 
@@ -53,7 +53,7 @@ public class SearchQuery {
     public List<Customer> findCustomersByBetweenSum(int minExpenses, int maxExpenses) {
         List<Customer> customerList = new ArrayList<>();
         try (Connection connection = DatabaseHandler.getDbConnection();
-             PreparedStatement statement = connection.prepareStatement(Constant.SELECT_FIRST_NAME_AND_LAST_NAME_BETWEEN)) {
+             PreparedStatement statement = connection.prepareStatement(ConstantQuery.SELECT_FIRST_NAME_AND_LAST_NAME_BETWEEN)) {
             statement.setInt(1, minExpenses);
             statement.setInt(2, maxExpenses);
 
@@ -71,7 +71,7 @@ public class SearchQuery {
     public List<Customer> findCustomersByBadCustomers(int badCustomers) {
         List<Customer> customerList = new ArrayList<>();
         try (Connection connection = DatabaseHandler.getDbConnection();
-             PreparedStatement statement = connection.prepareStatement(Constant.QUERY_FOR_BAD_CUSTOMERS)) {
+             PreparedStatement statement = connection.prepareStatement(ConstantQuery.QUERY_FOR_BAD_CUSTOMERS)) {
             statement.setInt(1, badCustomers);
 
             ResultSet resultSet = statement.executeQuery();

@@ -1,6 +1,6 @@
 package com.semenov.query;
 
-public class Constant {
+public class ConstantQuery {
 
     public static final String SELECT_BY_LAST_NAME = "SELECT customer.firstname, customer.lastname " +
             "FROM customer" +

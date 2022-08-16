@@ -17,7 +17,6 @@ public class Main {
     public static final String STATISTIC = "stat";
     public static final String DEFAULT_PATH_NAME = "D:\\exception.json";
 
-
     public static void main(String[] args) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

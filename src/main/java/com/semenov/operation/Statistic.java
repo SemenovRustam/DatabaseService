@@ -68,7 +68,6 @@ public class Statistic {
         });
 
         int totalExpensiveAllPurchaseOfPeriod = getTotalExpensiveAllPurchaseForPeriod(customerStatisticList);
-
         BigDecimal avgExpenses = getAvgExpenses(customersIdInPeriod, totalExpensiveAllPurchaseOfPeriod);
 
         log.info("START CREATE A COMPLETE STATISTIC FOR PERIOD\n");
@@ -80,7 +79,6 @@ public class Statistic {
                 .avgExpenses(avgExpenses)
                 .build();
         log.info("COMPLETE STATISTIC FOR PERIOD {}\n", finalStatistics);
-
         writeResultStatisticInFile(finalStatistics, outputFile);
     }
 
@@ -118,6 +116,7 @@ public class Statistic {
         int totalExpensiveAllPurchaseOfPeriod = customerStatisticList.stream()
                 .mapToInt(CustomerStatistic::getTotalExpenses)
                 .sum();
+
         log.info("TOTAL EXPENSIVE FOR ALL PURCHASE : {}", totalExpensiveAllPurchaseOfPeriod);
         return totalExpensiveAllPurchaseOfPeriod;
     }

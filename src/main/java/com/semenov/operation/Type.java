@@ -10,5 +10,5 @@ public enum Type {
     STAT("stat"),
     ERROR("error");
 
-    private String type;
+    private final String type;
 }
